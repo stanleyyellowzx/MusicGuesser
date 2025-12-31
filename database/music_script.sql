@@ -17,4 +17,9 @@ CREATE TABLE songs (
 );
 
 INSERT INTO songs (artist, song_name, song_file_name, duration) VALUES
-('Yorushika', 'Nautilus', 'nautilus.mp4', 262);
+('Yorushika', 'Nautilus', 'nautilus.mp4', 262),
+('RADWIMPS', 'Kaiba', 'kaiba_instrumental.mp3', 266),
+('RADWIMPS', 'KANASHIBARI', 'kanashibari_instrumental.mp3', 297),
+('RADWIMPS', 'MAKAFUKA', 'makafuka_instrumental.mp3', 331),
+('RADWIMPS', 'MS. PHENOMENAL', 'ms_phenomenal_instrumental.mp3', 318),
+('RADWIMPS', 'Tokumeikibo', 'tokumeikibo_instrumental.mp3', 249);

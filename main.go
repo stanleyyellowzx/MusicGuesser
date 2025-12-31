@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/stanleyyellowzx/MusicGuesser/audio"
+	"github.com/stanleyyellowzx/MusicGuesser/database"
 )
 
 func main() {
@@ -10,4 +11,6 @@ func main() {
 	audio.PlayAudio(filename)
 
 	fmt.Println("Playing audio")
+
+	database.ConnectToDatabase()
 }
