@@ -42,8 +42,8 @@ func ConnectToDatabase() {
 }
 
 func CloseDatabase() {
-	if db == nil {
-		fmt.Println("Not connected to a database, returning")
+	if !checkDatabaseConnection() {
+		return
 	}
 
 	fmt.Println("Closing database")
@@ -52,7 +52,6 @@ func CloseDatabase() {
 
 func GetAllSongData() {
 	if !checkDatabaseConnection() {
-		fmt.Println("Not connected to a database, returning")
 		return
 	}
 	results, err := db.Query("SELECT * FROM songs")
@@ -83,7 +82,6 @@ func GetAllSongData() {
 
 func GetArtistSongData(artistName string) {
 	if !checkDatabaseConnection() {
-		fmt.Println("Not connected to a database, returning")
 		return
 	}
 	results, err := db.Query("SELECT * FROM songs where artist = ?", artistName)
@@ -114,6 +112,7 @@ func GetArtistSongData(artistName string) {
 
 func checkDatabaseConnection() bool {
 	if db == nil {
+		fmt.Println("Not connected to a database, returning")
 		return false
 	} else {
 		return true
