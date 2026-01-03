@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"os"
-	"log"
+	"github.com/stanleyyellowzx/MusicGuesser/config"
 )
 
 type SongData struct {
@@ -21,20 +20,17 @@ var db *sql.DB
 
 func ConnectToDatabase() {
 	// load environment variables (sql connection)
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	config.LoadEnvFile()
 	dataSourceName := os.Getenv("DATABASE_CONNECTION")
-
+	var err error
 	db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	pingErr := db.Ping()
-	if pingErr != nil {
-		panic(pingErr.Error())
+	err = db.Ping()
+	if err != nil {
+		panic(err.Error())
 	}
 
 	fmt.Println("Successfully Connected to MySQL database")
