@@ -1,23 +1,34 @@
 package audio
 
 import (
-    "os/exec"
-	"runtime"
-	"log"
+    "os"
+    "log"
+    "time"
+    "github.com/faiface/beep"
+    "github.com/faiface/beep/mp3"
+    "github.com/faiface/beep/speaker"
 )
 
 func PlayAudio(filename string) {
-	var cmd *exec.Cmd
-	switch runtime.GOOS {
-    case "windows":
-        cmd = exec.Command("cmd", "/C", "start", filename)
-    case "darwin":
-        cmd = exec.Command("open", filename)
-    default:
-        cmd = exec.Command("xdg-open", filename)
-    }
+	f, err := os.Open("audio_files/kaiba_instrumental.mp3")
+	if err != nil {
+		log.Fatal(err)
+	}
+    streamer, format, err := mp3.Decode(f)
+    if err != nil {
+		log.Fatal(err)
+	}
+    defer streamer.Close()
+    
+    //sr := format.SampleRate * 2
+	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
+    //resampled := beep.Resample(4, format.SampleRate, sr, streamer)
+	done := make(chan bool)
+	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
+		done <- true
+	})))
 
-    if err := cmd.Start(); err != nil {
-        log.Fatal(err)
-    }
+	<-done
+
+	<-done
 }
