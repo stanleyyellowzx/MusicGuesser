@@ -46,9 +46,9 @@ func CloseDatabase() {
 	db.Close()
 }
 
-func GetAllSongData() {
+func GetAllSongData() ([]SongData, error) {
 	if !checkDatabaseConnection() {
-		return
+		return nil, fmt.Errorf("Not connected to a database")
 	}
 	results, err := db.Query("SELECT * FROM songs")
 	if err != nil {
@@ -57,7 +57,7 @@ func GetAllSongData() {
 	
 	defer results.Close()
 
-	var songsArray []SongData
+	var songsSlice []SongData
 
 	for results.Next() {
 		var song SongData
@@ -65,20 +65,18 @@ func GetAllSongData() {
 		if err != nil {
 			panic(err.Error())
 		}
-		songsArray = append(songsArray, song)
+		songsSlice = append(songsSlice, song)
 	}
 	if err = results.Err(); err != nil {
 		panic(err.Error())
 	}
 
-	for index, element := range songsArray {
-		fmt.Println("Index: ", index, ", Element: ", element)
-	}
+	return songsSlice, nil
 }
 
-func GetArtistSongData(artistName string) {
+func GetArtistSongData(artistName string) ([]SongData, error) {
 	if !checkDatabaseConnection() {
-		return
+		return nil, fmt.Errorf("Not connected to a database")
 	}
 	results, err := db.Query("SELECT * FROM songs where artist = ?", artistName)
 	if err != nil {
@@ -87,7 +85,7 @@ func GetArtistSongData(artistName string) {
 	
 	defer results.Close()
 
-	var songsArray []SongData
+	var songsSlice []SongData
 
 	for results.Next() {
 		var song SongData
@@ -95,15 +93,13 @@ func GetArtistSongData(artistName string) {
 		if err != nil {
 			panic(err.Error())
 		}
-		songsArray = append(songsArray, song)
+		songsSlice = append(songsSlice, song)
 	}
 	if err = results.Err(); err != nil {
 		panic(err.Error())
 	}
 
-	for index, element := range songsArray {
-		fmt.Println("Index: ", index, ", Element: ", element)
-	}
+	return songsSlice, nil
 }
 
 func checkDatabaseConnection() bool {

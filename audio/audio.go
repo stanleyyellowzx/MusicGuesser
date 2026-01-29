@@ -10,7 +10,7 @@ import (
 )
 
 func PlayAudio(filename string) {
-	f, err := os.Open("audio_files/kaiba_instrumental.mp3")
+	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,4 +31,8 @@ func PlayAudio(filename string) {
 	<-done
 
 	<-done
+}
+
+func PlayAudioClip(filename string) {
+	
 }
