@@ -4,12 +4,18 @@ import (
     "os"
     "log"
     "time"
+	"math/rand/v2"
     "github.com/faiface/beep"
     "github.com/faiface/beep/mp3"
     "github.com/faiface/beep/speaker"
 )
 
-func PlayAudio(filename string) {
+var globalSampleRate = beep.SampleRate(48000)
+var initialized = false
+
+func PlayAudioClip(filename string, songLength int) {
+	initSpeaker()
+
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -19,20 +25,41 @@ func PlayAudio(filename string) {
 		log.Fatal(err)
 	}
     defer streamer.Close()
-    
-    //sr := format.SampleRate * 2
-	speaker.Init(format.SampleRate, format.SampleRate.N(time.Second/10))
-    //resampled := beep.Resample(4, format.SampleRate, sr, streamer)
-	done := make(chan bool)
-	speaker.Play(beep.Seq(streamer, beep.Callback(func() {
-		done <- true
-	})))
 
-	<-done
+	// generate time to skip
+	secondsToSkip := generateAudioStart10Seconds(songLength)
+	samplesToSkip := format.SampleRate.N(time.Duration(secondsToSkip) * time.Second)
+	streamer.Seek(samplesToSkip)
+
+	var stream beep.Streamer = streamer
+
+	if format.SampleRate != globalSampleRate {
+        stream = beep.Resample(4, format.SampleRate, globalSampleRate, streamer)
+    }
+
+	// play audio for 10 seconds
+	samplesToPlay := format.SampleRate.N(10 * time.Second)
+	limited := beep.Take(samplesToPlay, stream)
+
+	// play audio
+	done := make(chan struct{})
+	speaker.Play(beep.Seq(limited, beep.Callback(func() {
+		close(done)
+	})))
 
 	<-done
 }
 
-func PlayAudioClip(filename string) {
-	
+func initSpeaker() {
+	if initialized {
+		return
+	}
+	speaker.Init(globalSampleRate, globalSampleRate.N(time.Second/10))
+	initialized = true
+}
+
+func generateAudioStart10Seconds(num int) int{
+	// the latest point that the audio can start at is 10 seconds before the end of the song
+	const startingPoint int = 10
+	return rand.IntN(num - startingPoint)
 }

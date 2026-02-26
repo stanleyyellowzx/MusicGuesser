@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"os"
-	"github.com/stanleyyellowzx/MusicGuesser/config"
 )
 
 type SongData struct {
@@ -20,7 +19,6 @@ var db *sql.DB
 
 func ConnectToDatabase() {
 	// load environment variables (sql connection)
-	config.LoadEnvFile()
 	dataSourceName := os.Getenv("DATABASE_CONNECTION")
 	var err error
 	db, err = sql.Open("mysql", dataSourceName)
