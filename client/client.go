@@ -30,7 +30,6 @@ func Start() {
 		selectedSongs := generateRandomSongs(5)
 		fmt.Println("Playing Songs")
 		for _, song := range selectedSongs {
-			fmt.Println("Current song is: ", songData[song].Song_name)
 			playSong := fmt.Sprintf("%s%s", audio_directory, songData[song].Song_file_name)
 			audio.PlayAudioClip(playSong, songData[song].Duration)
 
