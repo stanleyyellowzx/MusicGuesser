@@ -31,6 +31,7 @@ func PlayAudioClip(filename string, songLength int) {
 	samplesToSkip := format.SampleRate.N(time.Duration(secondsToSkip) * time.Second)
 	streamer.Seek(samplesToSkip)
 
+	// resample to match current song
 	var stream beep.Streamer = streamer
 
 	if format.SampleRate != globalSampleRate {
