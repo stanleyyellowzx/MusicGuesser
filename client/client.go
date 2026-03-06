@@ -27,7 +27,7 @@ func Start() {
 	fmt.Scanln()
 	for {
 		score := 0
-		selectedSongs := generateRandomSongs(5)
+		selectedSongs := generateRandomSongs(5, len(songData))
 		fmt.Println("Playing Songs")
 		for _, song := range selectedSongs {
 			playSong := fmt.Sprintf("%s%s", audio_directory, songData[song].Song_file_name)
@@ -60,11 +60,10 @@ func printTest(slice []int) {
 	}
 }
 
-func generateRandomSongs(numSongs int) []int{
-	songs := rand.Perm(numSongs)
-	// add 1 to each element for right now since there is not audio file for Nautilus by Yorushika
+func generateRandomSongs(numSongs int, totalSongs int) []int{
+	songs := rand.Perm(totalSongs)[:numSongs]
 	for index, element := range songs {
-		songs[index] = element + 1
+		fmt.Println(index, " index has element: ", element)
 	}
 	return songs
 }
