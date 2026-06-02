@@ -52,6 +52,7 @@ func Start() {
 			break
 		}
 	}
+	database.CloseDatabase()
 }
 
 func printTest(slice []int) {
@@ -62,8 +63,9 @@ func printTest(slice []int) {
 
 func generateRandomSongs(numSongs int, totalSongs int) []int{
 	songs := rand.Perm(totalSongs)[:numSongs]
-	for index, element := range songs {
-		fmt.Println(index, " index has element: ", element)
-	}
+	// added this in for testing
+	// for index, element := range songs {
+	// 	fmt.Println(index, " index has element: ", element)
+	// }
 	return songs
 }
